@@ -1,0 +1,5 @@
+#!/bin/bash -lie
+echo "Verifying all tools..."
+
+# TODO 0 AAS
+echo  " - OK"

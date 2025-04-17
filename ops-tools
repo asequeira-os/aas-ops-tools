@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+: "${AAS_OPS_TOOLS_IMAGE:=aas-ops-tools}"
+: "${TOP:=${PWD}}"
+
+OPS_TOOLS_DIR=$(dirname "${BASH_SOURCE[0]}")
+
+# build image
+docker buildx build --load \
+  -t "$AAS_OPS_TOOLS_IMAGE" \
+  -f "${OPS_TOOLS_DIR}"/Dockerfile  \
+  "${OPS_TOOLS_DIR}"
+
+# running with assumptions about user dirs for now
+cd "${TOP}"
+docker run --rm \
+  -v "${TOP}:/top"  \
+  -it "$AAS_OPS_TOOLS_IMAGE" bash -l
