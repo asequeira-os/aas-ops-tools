@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+echo "
+alias python=python3.12
+" >> /root/.bashrc

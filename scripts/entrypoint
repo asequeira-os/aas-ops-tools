@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+# TODO 0 AAS replace Pipenv
+if [ -f Pipfile ]; then
+  pipenv install
+fi
+
+if [ $# -eq 0 ]; then
+  bash -l
+else
+  "$@"
+fi
