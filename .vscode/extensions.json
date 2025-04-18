@@ -2,9 +2,6 @@
 	"recommendations": [
 		"ms-python.python",
 		"charliermarsh.ruff",
-		// "ms-python.black-formatter",
-		// "ms-python.isort",
-		// "samuelcolvin.jinjahtml",
 	],
 	"unwantedRecommendations": [
 		
