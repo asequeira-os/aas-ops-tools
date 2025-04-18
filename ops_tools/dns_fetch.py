@@ -29,7 +29,12 @@ def get_dns_records(domain: str):
     results = {}
     for record_type in record_types:
         try:
-            answer = resolver.resolve(domain, record_type)
+            answer = resolver.resolve(
+                domain,
+                record_type,
+                # tcp=True,
+                lifetime=20,
+            )
             results[record_type] = [unpack_rdata(rdata) for rdata in answer]
         except dns.resolver.NoAnswer:
             results[record_type] = []
