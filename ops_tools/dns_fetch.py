@@ -1,6 +1,17 @@
+# run as
+# uv run python ops_tools/dns_fetch.py --help
+# example
+# uv run python ops_tools/dns_fetch.py --format text --domains github.com
 import argparse
-from typing import Final
+from collections import defaultdict
+import json
+from typing import Final, cast
 
+import dns.rdata
+import dns.rdtypes
+import dns.rdtypes.ANY
+import dns.rdtypes.ANY.MX
+import dns.rdtypes.ANY.TXT
 import dns.resolver
 
 
@@ -20,16 +31,31 @@ def get_dns_records(domain: str):
     for record_type in record_types:
         try:
             answer = resolver.resolve(domain, record_type)
-            results[record_type] = [str(rdata) for rdata in answer]
+            results[record_type] = [unpack_rdata(rdata) for rdata in answer]
         except dns.resolver.NoAnswer:
             results[record_type] = []
         except dns.resolver.NXDOMAIN:
             results[record_type] = []
         except dns.resolver.NoNameservers:
             results[record_type] = []
-        except Exception as e:
-            results[record_type] = str(e)
+        except Exception:
+            raise
     return results
+
+
+def unpack_rdata(rdata):
+    match type(rdata):
+        case dns.rdtypes.ANY.MX.MX:
+            rdata = cast(dns.rdtypes.ANY.MX.MX, rdata)
+            return {
+                "pref": rdata.preference,
+                "exchange": rdata.exchange.to_text(),
+            }
+        case dns.rdtypes.ANY.TXT:
+            rdata = cast(dns.rdtypes.ANY.TXT, rdata)
+            return [bb.decode("utf-8") for bb in rdata.strings]
+
+    return str(rdata)
 
 
 record_name_lookup: Final = {
@@ -42,18 +68,46 @@ record_name_lookup: Final = {
     "SOA": "Start of Authority",
 }
 
+TEXT = "text"
+JSON = "json"
 
-def display_results(domain, results):
-    print("-" * 60)
-    print("DNS Records for {domain}")
+
+def display_results(domain: str, results, format, data):
+    drec = {}
+    data[domain] = drec
+    if format == TEXT:
+        print("-" * 60)
+        print("DNS Records for {domain}")
+    drec["records"] = defaultdict(list)
     for record_type, record_data in results.items():
-        record_title = record_name_lookup.get(record_type, f"Unknown {record_type}")
-        print(record_title)
+        record_title = record_name_lookup.get(
+            record_type,
+            f"Unknown {record_type}",
+        )
+        if format == TEXT:
+            print(record_title)
         if record_data:
             for record in record_data:
-                print(f"  - {record}")
+                if format == TEXT:
+                    print(f"  - {record}")
+                drec["records"][record_type].append(record)
         else:
-            print("  No record data")
+            if format == TEXT:
+                print("  No record data")
+
+
+def main(args):
+    _data = {}
+    for domain in args.domains:
+        results = get_dns_records(domain)
+        display_results(
+            domain,
+            results,
+            args.format,
+            data=_data,
+        )
+        if args.format == JSON:
+            print(json.dumps(_data, sort_keys=True, indent=2))
 
 
 _arg_parser = argparse.ArgumentParser()
@@ -65,8 +119,12 @@ _arg_parser.add_argument(
     required=True,
     help="a list of strings",
 )
+_arg_parser.add_argument(
+    "--format",
+    choices=[TEXT, JSON],
+    help="Output format",
+    default=TEXT,
+)
 
 if __name__ == "__main__":
-    for domain in _arg_parser.parse_args().domains:
-        results = get_dns_records(domain)
-        display_results(domain, results)
+    main(_arg_parser.parse_args())
