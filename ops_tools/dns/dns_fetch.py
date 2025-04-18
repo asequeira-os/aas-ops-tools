@@ -1,7 +1,7 @@
 # Run as
-# uv run python -m ops_tools.dns_fetch --help
+# uv run python -m ops_tools.dns.dns_fetch --help
 # Examples
-# uv run python -m ops_tools.dns_fetch --format text \
+# uv run python -m ops_tools.dns.dns_fetch --format text \
 #   --domains somedomain.com
 import argparse
 import json

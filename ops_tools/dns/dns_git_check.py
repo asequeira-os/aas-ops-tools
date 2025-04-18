@@ -1,12 +1,12 @@
 # example run
-# uv run python -m ops_tools.dns_git_check \
+# uv run python -m ops_tools.dns.dns_git_check \
 #   --domains mydomain1.com mydomain2.com --git-dir /top/my-dns-repo
 import argparse
 import json
 import os
 import subprocess
 
-from ops_tools import dns_fetch
+from ops_tools.dns import dns_fetch
 
 
 def check_git_clean(args):

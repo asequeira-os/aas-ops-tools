@@ -1,6 +1,8 @@
-name: Build docker image
-
 # verify docker build is functional
+name: Build docker image
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
