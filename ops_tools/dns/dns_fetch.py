@@ -1,7 +1,8 @@
-# run as
-# uv run python ops_tools/dns_fetch.py --help
-# example
-# uv run python ops_tools/dns_fetch.py --format text --domains github.com
+# Run as
+# uv run python -m ops_tools.dns.dns_fetch --help
+# Examples
+# uv run python -m ops_tools.dns.dns_fetch --format text \
+#   --domains somedomain.com
 import argparse
 import json
 from collections import defaultdict
@@ -100,7 +101,19 @@ def display_results(domain: str, results, format, data):
                 print("  No record data")
 
 
-def main(args):
+def process_domain(domain: str, format: str):
+    _data = {}
+    results = get_dns_records(domain)
+    display_results(
+        domain,
+        results,
+        format,
+        data=_data,
+    )
+    return _data
+
+
+def _main(args):
     _data = {}
     for domain in args.domains:
         results = get_dns_records(domain)
@@ -111,7 +124,9 @@ def main(args):
             data=_data,
         )
         if args.format == JSON:
-            print(json.dumps(_data, sort_keys=True, indent=2))
+            return json.dumps(_data, sort_keys=True, indent=2)
+        else:
+            return ""
 
 
 _arg_parser = argparse.ArgumentParser()
@@ -131,4 +146,4 @@ _arg_parser.add_argument(
 )
 
 if __name__ == "__main__":
-    main(_arg_parser.parse_args())
+    print(_main(_arg_parser.parse_args()))

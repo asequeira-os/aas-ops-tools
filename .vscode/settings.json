@@ -2,6 +2,7 @@
     "files.autoSave": "afterDelay",
     "files.exclude": {
         "**/.python-version": true,
+        "**/__pycache__": true,
         "**/.venv": true,
         "**/.git": true,
         "**/.svn": true,
