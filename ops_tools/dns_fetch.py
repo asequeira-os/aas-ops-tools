@@ -3,11 +3,10 @@
 # example
 # uv run python ops_tools/dns_fetch.py --format text --domains github.com
 import argparse
-from collections import defaultdict
 import json
+from collections import defaultdict
 from typing import Final, cast
 
-import dns.rdata
 import dns.rdtypes
 import dns.rdtypes.ANY
 import dns.rdtypes.ANY.MX

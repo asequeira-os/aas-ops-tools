@@ -19,7 +19,7 @@ RUN ./install-all.sh
 COPY README.md /aas-docker
 
 # # single quotes are important since $PATH should not expand
-RUN echo 'export PS1="aas-ops-tools ${PS1}"' >> /root/.bashrc
+RUN echo 'export PS1="ops-tools ${PS1}"' >> /root/.bashrc
 RUN echo 'export PATH=/root/go/bin:${PATH}' >> /root/.bashrc
 
 WORKDIR /top
