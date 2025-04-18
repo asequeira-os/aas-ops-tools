@@ -1,3 +1,20 @@
 {
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "files.exclude": {
+        "**/.python-version": true,
+        "**/.venv": true,
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+    },
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.unusedImports": "explicit",
+            "source.organizeImports": "always",
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
 }

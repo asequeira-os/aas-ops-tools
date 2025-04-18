@@ -15,4 +15,5 @@ docker buildx build --load \
 cd "${TOP}"
 docker run --rm \
   -v "${TOP}:/top"  \
+  --name aas-ops-tools-dev \
   -it "$AAS_OPS_TOOLS_IMAGE" bash -l
